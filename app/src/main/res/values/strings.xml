@@ -10,4 +10,7 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_map">Map</string>
     <string name="open_camera">open camera</string>
+    <string name="dialog_permission_title">permissionTitle</string>
+    <string name="dialog_permission_default_message">message</string>
+    <string name="dialog_permission_button_positive">positive</string>
 </resources>
