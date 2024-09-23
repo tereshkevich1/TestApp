@@ -1,4 +1,4 @@
-package com.example.testapp.ui.util
+package com.example.testapp.presentation.ui.util
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION

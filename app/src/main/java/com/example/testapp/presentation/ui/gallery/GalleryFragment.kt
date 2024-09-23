@@ -1,4 +1,4 @@
-package com.example.testapp.ui.gallery
+package com.example.testapp.presentation.ui.gallery
 
 import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
@@ -21,8 +21,9 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.testapp.databinding.FragmentGalleryBinding
-import com.example.testapp.ui.util.Permission
-import com.example.testapp.ui.util.PermissionManager
+import com.example.testapp.presentation.ui.util.Permission
+import com.example.testapp.presentation.ui.util.PermissionManager
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -30,13 +31,13 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+@AndroidEntryPoint
 class GalleryFragment : Fragment() {
 
     private var _binding: FragmentGalleryBinding? = null
     private val galleryViewModel: GalleryViewModel by viewModels()
 
     private val binding get() = _binding!!
-    //private lateinit var mediaPath: File
 
     private val permissionManager = PermissionManager.from(this)
 
@@ -60,12 +61,11 @@ class GalleryFragment : Fragment() {
                     ImageDecoder.decodeBitmap(source)
                 }
 
-                saveBitmapToFile(bitmap, "image/jpeg", uri.path)
+                galleryViewModel.saveImage(bitmap, "image/jpeg", uri.path)
             }
         }
 
     private fun showError() {
-
     }
 
 
@@ -103,11 +103,9 @@ class GalleryFragment : Fragment() {
 
                 if (cameraGranted) {
                     if (locationGranted) {
-                        Log.d("permissions", "location yes")
                         openCamera()
                     } else {
-                        Log.d("permissions", "location no")
-                        // openCamera()
+                        openCamera()
                     }
                 } else {
                     Log.d("permissions", "camera no")
@@ -115,53 +113,10 @@ class GalleryFragment : Fragment() {
             }
     }
 
-    @Throws(IOException::class)
-    fun createNewImageFile(context: Context): File {
-        // Create an image file name
-        val timeStamp: String =
-            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            "JPEG_${timeStamp}_", /* prefix */
-            ".jpg", /* suffix */
-            storageDir /* directory */
-        ).apply {
-            // Save a file: path for use with ACTION_VIEW intents
-            absolutePath
-        }
-    }
-
-    private fun saveBitmapToFile(bitmap: Bitmap?, mimeType: String, absolutePath: String?): File? {
-        if (bitmap == null || absolutePath.isNullOrEmpty()) {
-            return null
-        }
-
-        val file = File(absolutePath)
-
-        FileOutputStream(file).use { stream ->
-            when {
-                mimeType.contains("jpg", ignoreCase = true) || mimeType.contains(
-                    "jpeg",
-                    ignoreCase = true
-                ) -> {
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
-                }
-
-                mimeType.contains("png", ignoreCase = true) -> {
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                }
-
-                else -> {
-                    return null
-                }
-            }
-        }
-        return file
-    }
 
     private fun openCamera() {
         try {
-            val imageFile = createNewImageFile(requireContext())
+            val imageFile = galleryViewModel.createNewImageFile(requireContext())
             val imageUri = FileProvider.getUriForFile(
                 requireActivity(),
                 "com.example.testapp.provider",
@@ -212,6 +167,52 @@ class GalleryFragment : Fragment() {
         } catch (e: ActivityNotFoundException) {
             // display error state to the user
         }
+    }*/
+
+    /*
+    @Throws(IOException::class)
+    fun createNewImageFile(context: Context): File {
+        // Create an image file name
+        val timeStamp: String =
+            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
+        ).apply {
+            // Save a file: path for use with ACTION_VIEW intents
+            absolutePath
+        }
+    }*/
+
+    /*
+    private fun saveBitmapToFile(bitmap: Bitmap?, mimeType: String, absolutePath: String?): File? {
+        if (bitmap == null || absolutePath.isNullOrEmpty()) {
+            return null
+        }
+
+        val file = File(absolutePath)
+
+        FileOutputStream(file).use { stream ->
+            when {
+                mimeType.contains("jpg", ignoreCase = true) || mimeType.contains(
+                    "jpeg",
+                    ignoreCase = true
+                ) -> {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
+                }
+
+                mimeType.contains("png", ignoreCase = true) -> {
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                }
+
+                else -> {
+                    return null
+                }
+            }
+        }
+        return file
     }*/
 
 }

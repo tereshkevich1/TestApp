@@ -1,4 +1,4 @@
-package com.example.testapp.ui.util
+package com.example.testapp.presentation.ui.util
 
 import android.content.pm.PackageManager
 import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions

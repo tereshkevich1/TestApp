@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/galleryFragment"
-        android:name="com.example.testapp.ui.gallery.GalleryFragment"
+        android:name="com.example.testapp.presentation.ui.gallery.GalleryFragment"
         android:label="fragment_gallery"
         tools:layout="@layout/fragment_gallery" />
     <fragment
         android:id="@+id/mapFragment"
-        android:name="com.example.testapp.ui.map.MapFragment"
+        android:name="com.example.testapp.presentation.ui.map.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map" />
 </navigation>
