@@ -79,7 +79,8 @@ class GalleryFragment : Fragment() {
         val root: View = binding.root
 
         binding.openCameraButton.setOnClickListener {
-            handlePermissions()
+            //handlePermissions()
+            galleryViewModel.signUp("soegisrg","seigjosi")
         }
 
         val textView: TextView = binding.textGallery
@@ -132,87 +133,4 @@ class GalleryFragment : Fragment() {
             // display error state to the user
         }
     }
-
-
-    /*
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode != RESULT_OK) {
-            return
-        }
-        when (requestCode) {
-            100 -> {
-                val resultBitmap: Bitmap =
-                    BitmapFactory.decodeFile(mediaPath.absolutePath)//Save file to upload on server
-                binding.imageView2.setImageBitmap(resultBitmap)
-                val file = saveBitmapToFile(resultBitmap, "image/jpg", mediaPath.absolutePath)
-            }
-        }
-    }*/
-
-    /*
-    private fun dispatchTakePictureIntent() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        try {
-            mediaPath = createNewImageFile(requireActivity())
-            val uri = FileProvider.getUriForFile(
-                requireActivity(),
-                "com.example.testapp.provider",
-                mediaPath
-            )
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-            startActivityForResult(takePictureIntent, 100)
-
-
-        } catch (e: ActivityNotFoundException) {
-            // display error state to the user
-        }
-    }*/
-
-    /*
-    @Throws(IOException::class)
-    fun createNewImageFile(context: Context): File {
-        // Create an image file name
-        val timeStamp: String =
-            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            "JPEG_${timeStamp}_", /* prefix */
-            ".jpg", /* suffix */
-            storageDir /* directory */
-        ).apply {
-            // Save a file: path for use with ACTION_VIEW intents
-            absolutePath
-        }
-    }*/
-
-    /*
-    private fun saveBitmapToFile(bitmap: Bitmap?, mimeType: String, absolutePath: String?): File? {
-        if (bitmap == null || absolutePath.isNullOrEmpty()) {
-            return null
-        }
-
-        val file = File(absolutePath)
-
-        FileOutputStream(file).use { stream ->
-            when {
-                mimeType.contains("jpg", ignoreCase = true) || mimeType.contains(
-                    "jpeg",
-                    ignoreCase = true
-                ) -> {
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
-                }
-
-                mimeType.contains("png", ignoreCase = true) -> {
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                }
-
-                else -> {
-                    return null
-                }
-            }
-        }
-        return file
-    }*/
-
 }
