@@ -13,4 +13,10 @@
     <string name="dialog_permission_title">permissionTitle</string>
     <string name="dialog_permission_default_message">message</string>
     <string name="dialog_permission_button_positive">positive</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login">Login</string>
+    <string name="login_hint">Login</string>
+    <string name="register">Register</string>
+    <string name="password_hint">Password</string>
 </resources>

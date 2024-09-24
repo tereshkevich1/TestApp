@@ -7,8 +7,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.testapp.data.remote.dto.SignUserDtoIn
 import com.example.testapp.data.remote.dto.SignUpResponseDto
+import com.example.testapp.data.remote.dto.SignUserDtoIn
 import com.example.testapp.data.remote.util.NetworkResult
 import com.example.testapp.domain.use_case.CreateImageFileUseCase
 import com.example.testapp.domain.use_case.SaveImageUseCase
@@ -42,7 +42,7 @@ class GalleryViewModel @Inject constructor(
 
     fun signUp(login: String, password: String) {
         viewModelScope.launch {
-            signInUseCase.invoke(SignUserDtoIn("striOIOGng","drghidrg")).collect { result ->
+            signInUseCase.invoke(SignUserDtoIn("sogifsjg","drghifdrg")).collect { result ->
                 when (result) {
                     is NetworkResult.Success -> {
                         _logIn.value = ScreenUiState.Success(result.data)

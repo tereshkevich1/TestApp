@@ -17,7 +17,6 @@ sealed class Permission(vararg val permissions: String) {
     data object Location : Permission(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION)
     data object Storage : Permission(WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE)
 
-
     companion object {
         fun from(permission: String) = when (permission) {
             ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION -> Location

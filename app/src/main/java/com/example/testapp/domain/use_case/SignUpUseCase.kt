@@ -1,17 +1,19 @@
 package com.example.testapp.domain.use_case
 
-import com.example.testapp.data.remote.dto.SignUserDtoIn
 import com.example.testapp.data.remote.dto.SignUpResponseDto
+import com.example.testapp.data.remote.dto.SignUserDtoIn
 import com.example.testapp.data.remote.util.NetworkResult
 import com.example.testapp.domain.repository.AuthRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-
 import javax.inject.Inject
 
-class SignUpUseCase @Inject constructor(private val repository: AuthRepository) {
+class SignUpUseCase @Inject constructor(
+    private val repository: AuthRepository,
+    private val saveAccessTokenUseCase: SaveAccessTokenUseCase
+) {
     suspend operator fun invoke(
         signUserDtoIn: SignUserDtoIn
     ): Flow<NetworkResult<SignUpResponseDto>> = flow {
@@ -26,6 +28,7 @@ class SignUpUseCase @Inject constructor(private val repository: AuthRepository) 
 
             is NetworkResult.Success -> {
                 emit(NetworkResult.Success(result.data))
+                saveAccessTokenUseCase(result.data.data.token)
             }
         }
     }.flowOn(Dispatchers.IO)

@@ -2,14 +2,12 @@ package com.example.testapp.presentation.ui.gallery
 
 import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,29 +16,23 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.example.testapp.R
 import com.example.testapp.databinding.FragmentGalleryBinding
 import com.example.testapp.presentation.ui.util.Permission
 import com.example.testapp.presentation.ui.util.PermissionManager
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @AndroidEntryPoint
 class GalleryFragment : Fragment() {
 
-    private var _binding: FragmentGalleryBinding? = null
+    private lateinit var binding: FragmentGalleryBinding
     private val galleryViewModel: GalleryViewModel by viewModels()
-
-    private val binding get() = _binding!!
-
+    private val authCheckViewModel: AuthCheckViewModel by viewModels()
     private val permissionManager = PermissionManager.from(this)
-
 
     private val activityResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -68,6 +60,16 @@ class GalleryFragment : Fragment() {
     private fun showError() {
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        authCheckViewModel.isAuthenticated.observe(this) {
+            if (!it) {
+                findNavController().navigate(R.id.action_galleryFragment_to_auth_navigation)
+            }
+        }
+        //findNavController().navigate(R.id.action_galleryFragment_to_auth_navigation)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,24 +77,19 @@ class GalleryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding = FragmentGalleryBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_gallery, container, false)
+
 
         binding.openCameraButton.setOnClickListener {
             //handlePermissions()
-            galleryViewModel.signUp("soegisrg","seigjosi")
+            galleryViewModel.signUp("soegisrg", "seigjosi")
         }
 
         val textView: TextView = binding.textGallery
         galleryViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
-        return root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        return binding.root
     }
 
     private fun handlePermissions() {

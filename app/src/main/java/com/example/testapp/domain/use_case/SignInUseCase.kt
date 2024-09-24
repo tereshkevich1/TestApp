@@ -10,7 +10,10 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class SignInUseCase @Inject constructor(private val repository: AuthRepository) {
+class SignInUseCase @Inject constructor(
+    private val repository: AuthRepository,
+    private val saveAccessTokenUseCase: SaveAccessTokenUseCase
+) {
     suspend operator fun invoke(
         signUserDtoIn: SignUserDtoIn
     ): Flow<NetworkResult<SignUpResponseDto>> = flow {
@@ -25,6 +28,7 @@ class SignInUseCase @Inject constructor(private val repository: AuthRepository) 
 
             is NetworkResult.Success -> {
                 emit(NetworkResult.Success(result.data))
+                saveAccessTokenUseCase(result.data.data.token)
             }
         }
     }.flowOn(Dispatchers.IO)

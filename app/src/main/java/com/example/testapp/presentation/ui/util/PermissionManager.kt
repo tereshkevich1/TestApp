@@ -6,7 +6,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import java.lang.ref.WeakReference
 
-
 class PermissionManager private constructor(private val fragment: WeakReference<Fragment>) {
 
     private val requiredPermissions = mutableListOf<Permission>()
