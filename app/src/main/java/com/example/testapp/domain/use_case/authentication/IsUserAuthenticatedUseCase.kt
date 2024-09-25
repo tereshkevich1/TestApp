@@ -1,4 +1,4 @@
-package com.example.testapp.domain.use_case
+package com.example.testapp.domain.use_case.authentication
 
 import com.example.testapp.data.common.utils.SharedPrefs
 import javax.inject.Inject

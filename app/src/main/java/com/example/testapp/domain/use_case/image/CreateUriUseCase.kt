@@ -1,25 +1,31 @@
-package com.example.testapp.domain.use_case
+package com.example.testapp.domain.use_case.image
 
 import android.content.Context
 import android.os.Environment
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
-class CreateImageFileUseCase @Inject constructor() {
-    operator fun invoke(context: Context): File {
+class CreateFileUseCase @Inject constructor(@ApplicationContext private val context: Context) {
+    operator fun invoke(): File {
         val timeStamp: String =
             SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
+
+        val imageFile = File.createTempFile(
             "JPEG_${timeStamp}_", /* prefix */
             ".jpg", /* suffix */
             storageDir /* directory */
-        ).apply {
-            // Save a file: path for use with ACTION_VIEW intents
-            absolutePath
-        }
+        )
+
+        /*return FileProvider.getUriForFile(
+            context,
+            "com.example.testapp.provider",
+            imageFile
+        )*/
+        return imageFile
     }
 }

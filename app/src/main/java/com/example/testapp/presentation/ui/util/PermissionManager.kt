@@ -45,7 +45,7 @@ class PermissionManager private constructor(private val fragment: WeakReference<
         cleanUp()
     }
 
-     private fun cleanUp() {
+    private fun cleanUp() {
         requiredPermissions.clear()
         callback = {}
     }
