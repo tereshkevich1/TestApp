@@ -20,12 +20,6 @@ class CreateFileUseCase @Inject constructor(@ApplicationContext private val cont
             ".jpg", /* suffix */
             storageDir /* directory */
         )
-
-        /*return FileProvider.getUriForFile(
-            context,
-            "com.example.testapp.provider",
-            imageFile
-        )*/
         return imageFile
     }
 }

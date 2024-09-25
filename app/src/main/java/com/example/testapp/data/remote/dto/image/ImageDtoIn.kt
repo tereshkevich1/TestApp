@@ -1,4 +1,4 @@
-package com.example.testapp.data.remote.dto
+package com.example.testapp.data.remote.dto.image
 
 data class ImageDtoIn(
     val base64Image: String,

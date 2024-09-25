@@ -1,6 +1,6 @@
 package com.example.testapp.data.remote.util
 
-import com.example.testapp.data.remote.dto.SignUpErrorResponse
+import com.example.testapp.data.remote.dto.common.SignUpErrorResponse
 import com.google.gson.Gson
 import retrofit2.HttpException
 import retrofit2.Response

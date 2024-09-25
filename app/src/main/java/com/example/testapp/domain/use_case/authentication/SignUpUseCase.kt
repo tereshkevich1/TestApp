@@ -1,7 +1,7 @@
 package com.example.testapp.domain.use_case.authentication
 
-import com.example.testapp.data.remote.dto.SignUpResponseDto
-import com.example.testapp.data.remote.dto.SignUserDtoIn
+import com.example.testapp.data.remote.dto.auth.SignUpResponseDto
+import com.example.testapp.data.remote.dto.auth.SignUserDtoIn
 import com.example.testapp.data.remote.util.NetworkResult
 import com.example.testapp.domain.repository.AuthRepository
 import kotlinx.coroutines.Dispatchers

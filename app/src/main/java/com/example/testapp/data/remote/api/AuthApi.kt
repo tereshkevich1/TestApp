@@ -1,7 +1,7 @@
 package com.example.testapp.data.remote.api
 
-import com.example.testapp.data.remote.dto.SignUpResponseDto
-import com.example.testapp.data.remote.dto.SignUserDtoIn
+import com.example.testapp.data.remote.dto.auth.SignUpResponseDto
+import com.example.testapp.data.remote.dto.auth.SignUserDtoIn
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST

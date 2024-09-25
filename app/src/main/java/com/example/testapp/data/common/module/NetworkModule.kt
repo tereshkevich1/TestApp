@@ -3,6 +3,7 @@ package com.example.testapp.data.common.module
 import com.example.testapp.data.common.utils.RequestInterceptor
 import com.example.testapp.data.common.utils.SharedPrefs
 import com.example.testapp.data.remote.api.AuthApi
+import com.example.testapp.data.remote.api.ImagesApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,8 +46,14 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideCurrencyExchangeApi(retrofit: Retrofit): AuthApi {
+    fun provideAuthApi(retrofit: Retrofit): AuthApi {
         return retrofit.create(AuthApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideImagesApi(retrofit: Retrofit): ImagesApi {
+        return retrofit.create(ImagesApi::class.java)
     }
 
     @Provides

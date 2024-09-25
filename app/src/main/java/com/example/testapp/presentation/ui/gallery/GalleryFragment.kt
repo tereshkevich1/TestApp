@@ -13,8 +13,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.testapp.R
 import com.example.testapp.databinding.FragmentGalleryBinding
+import com.example.testapp.presentation.ui.gallery.adapter.ImageRecyclerViewAdapter
+import com.example.testapp.presentation.ui.gallery.adapter.OnImageClickListener
 import com.example.testapp.presentation.ui.util.Permission
 import com.example.testapp.presentation.ui.util.PermissionManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,6 +31,8 @@ class GalleryFragment : Fragment() {
     private val authCheckViewModel: AuthCheckViewModel by viewModels()
     private val locationViewModel: LocationViewModel by viewModels()
     private val permissionManager = PermissionManager.from(this)
+    private lateinit var adapter: ImageRecyclerViewAdapter
+    private lateinit var recyclerView: RecyclerView
 
     private val activityResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -54,12 +60,32 @@ class GalleryFragment : Fragment() {
     ): View {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_gallery, container, false)
-
+        setupRecyclerView()
         binding.openCameraButton.setOnClickListener {
             handlePermissions()
         }
 
         return binding.root
+    }
+
+    private fun setupRecyclerView() {
+        val onImageClickListener = object : OnImageClickListener {}
+        recyclerView = binding.cartRC
+
+        adapter = ImageRecyclerViewAdapter(
+            galleryViewModel.images.value ?: mutableListOf(),
+            onImageClickListener
+        )
+        recyclerView.adapter = adapter
+
+        recyclerView.apply {
+            layoutManager = GridLayoutManager(requireContext(),3)
+            adapter = adapter
+        }
+
+        galleryViewModel.images.observe(viewLifecycleOwner) { imageList ->
+            adapter.updateImages(imageList)  // Update adapter's data
+        }
     }
 
     private fun handlePermissions() {

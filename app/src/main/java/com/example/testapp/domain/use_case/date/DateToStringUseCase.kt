@@ -13,7 +13,7 @@ class DateToStringUseCase @Inject constructor() {
     ): String {
         val formatter = SimpleDateFormat(format, locale)
         val calendar: Calendar = Calendar.getInstance()
-        calendar.timeInMillis = milliSeconds
+        calendar.timeInMillis = milliSeconds*1000
         return formatter.format(calendar.time)
     }
 }

@@ -1,4 +1,4 @@
-package com.example.testapp.data.remote.dto
+package com.example.testapp.data.remote.dto.auth
 
 data class SignUpResponseDto (
     val status: Int,

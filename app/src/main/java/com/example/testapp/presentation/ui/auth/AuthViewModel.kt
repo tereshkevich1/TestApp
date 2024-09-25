@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.testapp.data.remote.dto.SignUpResponseDto
-import com.example.testapp.data.remote.dto.SignUserDtoIn
+import com.example.testapp.data.remote.dto.auth.SignUpResponseDto
+import com.example.testapp.data.remote.dto.auth.SignUserDtoIn
 import com.example.testapp.data.remote.util.NetworkResult
 import com.example.testapp.domain.use_case.authentication.SignInUseCase
 import com.example.testapp.domain.use_case.authentication.SignUpUseCase
