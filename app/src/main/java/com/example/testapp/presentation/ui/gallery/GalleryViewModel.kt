@@ -1,6 +1,7 @@
 package com.example.testapp.presentation.ui.gallery
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,12 +9,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.testapp.data.remote.dto.image.ImageDtoOut
 import com.example.testapp.data.remote.util.NetworkResult
 import com.example.testapp.domain.model.ImageWithBitmap
-import com.example.testapp.domain.use_case.image.CreateFileUseCase
-import com.example.testapp.domain.use_case.image.GetImageByIdUseCase
-import com.example.testapp.domain.use_case.image.GetImagesUseCase
-import com.example.testapp.domain.use_case.image.GetUriForFileUseCase
-import com.example.testapp.domain.use_case.image.SaveImageUseCase
 import com.example.testapp.domain.use_case.image.UploadImageUseCase
+import com.example.testapp.domain.use_case.image.database_operations.GetImageByIdUseCase
+import com.example.testapp.domain.use_case.image.database_operations.GetImagesUseCase
+import com.example.testapp.domain.use_case.image.file_operations.CreateFileUseCase
+import com.example.testapp.domain.use_case.image.file_operations.GetUriForFileUseCase
+import com.example.testapp.domain.use_case.image.file_operations.SaveImageUseCase
 import com.example.testapp.presentation.ui.util.ScreenUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -28,6 +29,9 @@ class GalleryViewModel @Inject constructor(
     private val getImagesUseCase: GetImagesUseCase,
     private val getImageByIdUseCase: GetImageByIdUseCase
 ) : ViewModel() {
+
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
 
     private val _images = MutableLiveData<MutableList<ImageWithBitmap>>()
     val images: LiveData<MutableList<ImageWithBitmap>> = _images
@@ -44,11 +48,9 @@ class GalleryViewModel @Inject constructor(
     private fun uploadImage(
         imageBitmap: Bitmap,
         uri: String,
-        lat: Double,
-        lng: Double
     ) {
         viewModelScope.launch {
-            uploadImageUseCase.invoke(imageBitmap, uri, lat, lng).collect { result ->
+            uploadImageUseCase.invoke(imageBitmap, uri, latitude, longitude).collect { result ->
                 val networkResult = result.first
                 val image = getImageByIdUseCase.invoke(result.second)
                 image?.let { addImageToList(it) }
@@ -59,11 +61,13 @@ class GalleryViewModel @Inject constructor(
                     }
 
                     is NetworkResult.Error -> {
-                        _uploadImage.value = ScreenUiState.Error(networkResult.message ?: "Unknown Error")
+                        _uploadImage.value =
+                            ScreenUiState.Error(networkResult.message ?: "Unknown Error")
                     }
 
                     is NetworkResult.Exception -> {
-                        _uploadImage.value = ScreenUiState.Error(networkResult.e.message ?: "Unknown Error")
+                        _uploadImage.value =
+                            ScreenUiState.Error(networkResult.e.message ?: "Unknown Error")
                     }
                 }
             }
@@ -71,7 +75,10 @@ class GalleryViewModel @Inject constructor(
     }
 
 
-    fun handleImageResult(imageBitmap: Bitmap?, onErrorCallback: () -> Unit) {
+    fun handleImageResult(
+        imageBitmap: Bitmap?,
+        onErrorCallback: () -> Unit
+    ) {
         if (imageBitmap == null) {
             onErrorCallback()
             return
@@ -81,7 +88,7 @@ class GalleryViewModel @Inject constructor(
             val uri = getUriForFileUseCase.invoke(file).toString()
 
             saveImageUseCase.invoke(imageBitmap, "image/jpeg", file.absolutePath)
-            uploadImage(imageBitmap, uri, 0.0, 0.0)
+            uploadImage(imageBitmap, uri)
         } catch (e: Exception) {
             onErrorCallback()
         }
@@ -97,5 +104,11 @@ class GalleryViewModel @Inject constructor(
         val updatedList = _images.value?.toMutableList() ?: mutableListOf()
         updatedList.add(image)
         _images.value = updatedList
+    }
+
+    fun setCoordinates(lat: Double, lng: Double) {
+        Log.d("GalleryViewModel", "setCoordinates: $lat, $lng")
+        latitude = lat
+        longitude = lng
     }
 }

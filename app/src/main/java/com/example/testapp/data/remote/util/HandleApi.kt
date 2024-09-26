@@ -1,6 +1,5 @@
 package com.example.testapp.data.remote.util
 
-import android.util.Log
 import com.example.testapp.data.remote.dto.common.SignUpErrorResponse
 import com.google.gson.Gson
 import retrofit2.HttpException
@@ -31,10 +30,8 @@ suspend fun <T : Any, E: Any> handleApi(
             NetworkResult.Error(code = response.code(), message = errorMessage)
         }
     } catch (e: HttpException) {
-        Log.d("NetworkResult", "Su35cces")
         NetworkResult.Error(code = e.code(), message = e.message())
     } catch (e: Throwable) {
-        Log.d("NetworkResult", "Succ5es")
         NetworkResult.Exception(e)
     }
 }

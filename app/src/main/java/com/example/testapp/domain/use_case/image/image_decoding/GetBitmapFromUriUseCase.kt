@@ -1,4 +1,4 @@
-package com.example.testapp.domain.use_case.image
+package com.example.testapp.domain.use_case.image.image_decoding
 
 import android.content.Context
 import android.graphics.Bitmap

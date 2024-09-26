@@ -6,6 +6,7 @@ import com.example.testapp.data.remote.dto.image.ImageDtoOut
 import com.example.testapp.data.remote.util.NetworkResult
 import com.example.testapp.domain.repository.ImagesRepository
 import com.example.testapp.domain.use_case.date.GetCurrentTimestampUseCase
+import com.example.testapp.domain.use_case.image.image_decoding.BitmapToBase64UseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

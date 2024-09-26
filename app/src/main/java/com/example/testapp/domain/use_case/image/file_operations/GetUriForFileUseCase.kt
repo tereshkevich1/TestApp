@@ -1,4 +1,4 @@
-package com.example.testapp.domain.use_case.image
+package com.example.testapp.domain.use_case.image.file_operations
 
 import android.content.Context
 import android.net.Uri

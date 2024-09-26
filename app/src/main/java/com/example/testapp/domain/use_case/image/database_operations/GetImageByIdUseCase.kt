@@ -1,9 +1,10 @@
-package com.example.testapp.domain.use_case.image
+package com.example.testapp.domain.use_case.image.database_operations
 
 import android.net.Uri
 import com.example.testapp.domain.model.ImageWithBitmap
 import com.example.testapp.domain.repository.ImagesRepository
 import com.example.testapp.domain.use_case.date.DateToStringUseCase
+import com.example.testapp.domain.use_case.image.image_decoding.GetBitmapFromUriUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -21,7 +22,7 @@ class GetImageByIdUseCase @Inject constructor(
 
         val formattedDate = dateToStringUseCase.invoke(
             milliSeconds = imageEntity.date,
-            format = "yyyy-MM-dd HH:mm:ss"
+            format = "yyyy-MM-dd"
         )
 
         ImageWithBitmap(
