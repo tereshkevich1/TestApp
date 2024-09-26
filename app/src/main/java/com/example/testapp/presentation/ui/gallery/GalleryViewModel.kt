@@ -9,7 +9,7 @@ import com.example.testapp.data.remote.dto.image.ImageDtoOut
 import com.example.testapp.data.remote.util.NetworkResult
 import com.example.testapp.domain.model.ImageWithBitmap
 import com.example.testapp.domain.use_case.image.CreateFileUseCase
-import com.example.testapp.domain.use_case.image.GetBitmapFromUriUseCase
+import com.example.testapp.domain.use_case.image.GetImageByIdUseCase
 import com.example.testapp.domain.use_case.image.GetImagesUseCase
 import com.example.testapp.domain.use_case.image.GetUriForFileUseCase
 import com.example.testapp.domain.use_case.image.SaveImageUseCase
@@ -22,11 +22,11 @@ import javax.inject.Inject
 @HiltViewModel
 class GalleryViewModel @Inject constructor(
     private val createFileUseCase: CreateFileUseCase,
-    private val getBitmapFromUriUseCase: GetBitmapFromUriUseCase,
     private val saveImageUseCase: SaveImageUseCase,
     private val getUriForFileUseCase: GetUriForFileUseCase,
     private val uploadImageUseCase: UploadImageUseCase,
-    private val getImagesUseCase: GetImagesUseCase
+    private val getImagesUseCase: GetImagesUseCase,
+    private val getImageByIdUseCase: GetImageByIdUseCase
 ) : ViewModel() {
 
     private val _images = MutableLiveData<MutableList<ImageWithBitmap>>()
@@ -40,6 +40,36 @@ class GalleryViewModel @Inject constructor(
             getImages()
         }
     }
+
+    private fun uploadImage(
+        imageBitmap: Bitmap,
+        uri: String,
+        lat: Double,
+        lng: Double
+    ) {
+        viewModelScope.launch {
+            uploadImageUseCase.invoke(imageBitmap, uri, lat, lng).collect { result ->
+                val networkResult = result.first
+                val image = getImageByIdUseCase.invoke(result.second)
+                image?.let { addImageToList(it) }
+
+                when (networkResult) {
+                    is NetworkResult.Success -> {
+                        _uploadImage.value = ScreenUiState.Success(networkResult.data)
+                    }
+
+                    is NetworkResult.Error -> {
+                        _uploadImage.value = ScreenUiState.Error(networkResult.message ?: "Unknown Error")
+                    }
+
+                    is NetworkResult.Exception -> {
+                        _uploadImage.value = ScreenUiState.Error(networkResult.e.message ?: "Unknown Error")
+                    }
+                }
+            }
+        }
+    }
+
 
     fun handleImageResult(imageBitmap: Bitmap?, onErrorCallback: () -> Unit) {
         if (imageBitmap == null) {
@@ -57,35 +87,15 @@ class GalleryViewModel @Inject constructor(
         }
     }
 
-    private fun uploadImage(
-        imageBitmap: Bitmap,
-        uri: String,
-        lat: Double,
-        lng: Double
-    ) {
-        viewModelScope.launch {
-            uploadImageUseCase.invoke(imageBitmap, uri, lat, lng).collect { result ->
-                when (result) {
-                    is NetworkResult.Success -> {
-                        _uploadImage.value = ScreenUiState.Success(result.data)
-                    }
-
-                    is NetworkResult.Error -> {
-                        _uploadImage.value = ScreenUiState.Error(result.message ?: "Unknown Error")
-                    }
-
-                    is NetworkResult.Exception -> {
-                        _uploadImage.value =
-                            ScreenUiState.Error(result.e.message ?: "Unknown Error")
-                    }
-                }
-            }
-        }
-    }
-
-    private fun getImages(){
+    private fun getImages() {
         viewModelScope.launch {
             _images.value = getImagesUseCase.invoke()
         }
+    }
+
+    private fun addImageToList(image: ImageWithBitmap) {
+        val updatedList = _images.value?.toMutableList() ?: mutableListOf()
+        updatedList.add(image)
+        _images.value = updatedList
     }
 }

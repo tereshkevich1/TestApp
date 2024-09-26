@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.testapp.data.remote.dto.auth.SignUpResponseDto
 import com.example.testapp.data.remote.dto.auth.SignUserDtoIn
+import com.example.testapp.data.remote.dto.auth.SignUserOutDto
 import com.example.testapp.data.remote.util.NetworkResult
 import com.example.testapp.domain.use_case.authentication.SignInUseCase
 import com.example.testapp.domain.use_case.authentication.SignUpUseCase
@@ -19,11 +19,11 @@ class AuthViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
     private val signUpUseCase: SignUpUseCase
 ) : ViewModel() {
-    private val _signUp = MutableLiveData<ScreenUiState<SignUpResponseDto>>()
-    val signUp: LiveData<ScreenUiState<SignUpResponseDto>> = _signUp
+    private val _signUp = MutableLiveData<ScreenUiState<SignUserOutDto>>()
+    val signUp: LiveData<ScreenUiState<SignUserOutDto>> = _signUp
 
-    private val _logIn = MutableLiveData<ScreenUiState<SignUpResponseDto>>()
-    val logIn: LiveData<ScreenUiState<SignUpResponseDto>> = _logIn
+    private val _logIn = MutableLiveData<ScreenUiState<SignUserOutDto>>()
+    val logIn: LiveData<ScreenUiState<SignUserOutDto>> = _logIn
 
     fun signIn(login: String, password: String) {
         viewModelScope.launch {

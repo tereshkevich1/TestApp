@@ -1,7 +1,6 @@
 package com.example.testapp.domain.use_case.image
 
 import android.graphics.Bitmap
-import android.util.Log
 import com.example.testapp.data.remote.dto.image.ImageDtoIn
 import com.example.testapp.data.remote.dto.image.ImageDtoOut
 import com.example.testapp.data.remote.util.NetworkResult
@@ -23,25 +22,13 @@ class UploadImageUseCase @Inject constructor(
         uri: String,
         lat: Double,
         lng: Double
-    ): Flow<NetworkResult<ImageDtoOut>> {
+    ): Flow<Pair<NetworkResult<ImageDtoOut>, Long>> {
         val base64 = bitmapToBase64UseCase.invoke(bitmap, Bitmap.CompressFormat.JPEG)
         val timestamp = getCurrentTimestampUseCase.invoke()
-        Log.d("UploadImageUseCase", "Timestamp: $timestamp")
         val imageDtoIn = ImageDtoIn(base64, timestamp, lat, lng)
         return flow {
-            when (val result = repository.uploadImage(imageDtoIn, uri)) {
-                is NetworkResult.Error -> {
-                    emit(NetworkResult.Error(result.code, result.message))
-                }
-
-                is NetworkResult.Exception -> {
-                    emit(NetworkResult.Exception(result.e))
-                }
-
-                is NetworkResult.Success -> {
-                    emit(NetworkResult.Success(result.data))
-                }
-            }
+            val result = repository.uploadImage(imageDtoIn, uri)
+            emit(result)
         }.flowOn(Dispatchers.IO)
     }
 }

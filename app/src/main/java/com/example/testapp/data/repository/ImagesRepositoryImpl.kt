@@ -1,6 +1,5 @@
 package com.example.testapp.data.repository
 
-import android.util.Log
 import com.example.testapp.data.local.data_sorce.ImagesLocalDataSource
 import com.example.testapp.data.local.entity.ImageEntity
 import com.example.testapp.data.remote.data_source.image.ImagesRemoteDataSource
@@ -8,25 +7,23 @@ import com.example.testapp.data.remote.dto.image.ImageDtoIn
 import com.example.testapp.data.remote.dto.image.ImageDtoOut
 import com.example.testapp.data.remote.util.NetworkResult
 import com.example.testapp.domain.repository.ImagesRepository
-import com.example.testapp.domain.use_case.date.GetCurrentTimestampUseCase
 import javax.inject.Inject
 
 class ImagesRepositoryImpl @Inject constructor(
     private val imagesRemoteDataSource: ImagesRemoteDataSource,
-    private val imagesLocalDataSource: ImagesLocalDataSource,
-    private val getCurrentTimestampUseCase: GetCurrentTimestampUseCase
+    private val imagesLocalDataSource: ImagesLocalDataSource
 ) : ImagesRepository {
 
     override suspend fun uploadImage(
         imageDtoIn: ImageDtoIn,
         uri: String
-    ): NetworkResult<ImageDtoOut> {
+    ): Pair<NetworkResult<ImageDtoOut>, Long> {
         val result = imagesRemoteDataSource.uploadImage(imageDtoIn)
-        when (result) {
+        val newImageEntityId = when (result) {
             is NetworkResult.Success -> {
                 saveLocalImage(
                     result.data.id.toString(), uri,
-                    getCurrentTimestampUseCase.invoke(),
+                    result.data.date,
                     result.data.lat,
                     result.data.lng
                 )
@@ -36,10 +33,13 @@ class ImagesRepositoryImpl @Inject constructor(
                 saveLocalImage("", uri, imageDtoIn.date, imageDtoIn.lat, imageDtoIn.lng)
             }
         }
-        return result
+        return result to newImageEntityId
     }
 
     override suspend fun getPhotos(): List<ImageEntity> = imagesLocalDataSource.getPhotos()
+    override suspend fun getImageById(id: Long): ImageEntity? =
+        imagesLocalDataSource.getImageById(id)
+
 
     private suspend fun saveLocalImage(
         serverId: String,
@@ -47,8 +47,7 @@ class ImagesRepositoryImpl @Inject constructor(
         date: Long,
         lat: Double,
         lng: Double
-    ) {
-        Log.d("ImagesRepository", "Saving Local Image with date: $date")
+    ): Long {
         val localImage = ImageEntity(
             serverId = serverId,
             uri = uri,
@@ -56,6 +55,6 @@ class ImagesRepositoryImpl @Inject constructor(
             lat = lat,
             lng = lng
         )
-        imagesLocalDataSource.insertImage(localImage)
+        return imagesLocalDataSource.insertImage(localImage)
     }
 }

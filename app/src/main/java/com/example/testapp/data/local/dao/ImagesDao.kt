@@ -11,5 +11,8 @@ interface ImagesDao {
     suspend fun getPhotos(): List<ImageEntity>
 
     @Insert
-    suspend fun insertImage(image: ImageEntity)
+    suspend fun insertImage(image: ImageEntity): Long
+
+    @Query("SELECT * FROM photos WHERE id = :id")
+    suspend fun getImageById(id: Long): ImageEntity?
 }

@@ -10,7 +10,11 @@ class ImagesLocalDataSourceImpl @Inject constructor(private val dao: ImagesDao) 
         return dao.getPhotos()
     }
 
-    override suspend fun insertImage(image: ImageEntity) {
+    override suspend fun insertImage(image: ImageEntity): Long {
         return dao.insertImage(image)
+    }
+
+    override suspend fun getImageById(id: Long): ImageEntity? {
+        return dao.getImageById(id)
     }
 }

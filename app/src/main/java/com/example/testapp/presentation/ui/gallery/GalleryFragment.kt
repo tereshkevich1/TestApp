@@ -73,18 +73,17 @@ class GalleryFragment : Fragment() {
         recyclerView = binding.cartRC
 
         adapter = ImageRecyclerViewAdapter(
-            galleryViewModel.images.value ?: mutableListOf(),
             onImageClickListener
         )
         recyclerView.adapter = adapter
 
         recyclerView.apply {
-            layoutManager = GridLayoutManager(requireContext(),3)
+            layoutManager = GridLayoutManager(requireContext(), 3)
             adapter = adapter
         }
 
-        galleryViewModel.images.observe(viewLifecycleOwner) { imageList ->
-            adapter.updateImages(imageList)  // Update adapter's data
+        galleryViewModel.images.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
         }
     }
 
