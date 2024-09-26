@@ -107,7 +107,6 @@ class GalleryViewModel @Inject constructor(
     }
 
     fun setCoordinates(lat: Double, lng: Double) {
-        Log.d("GalleryViewModel", "setCoordinates: $lat, $lng")
         latitude = lat
         longitude = lng
     }
